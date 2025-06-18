@@ -22,12 +22,11 @@ export default function Register() {
     setError(null);
 
     try {
-      const res = await axios.post('http://localhost:3000/register', form);
-      console.log('Registered:', res.data);
-      navigate('/login');
+        const res = await axios.post('http://localhost:3000/register', form, { withCredentials: true });
+        console.log('Logged in as:', res.data.user);
+        navigate('/profile'); // or home
     } catch (err) {
-      console.error(err);
-      setError(err.response?.data?.message || 'Registration failed');
+        setError(err.response?.data?.message || 'Registration failed');
     }
   };
 
