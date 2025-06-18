@@ -19,6 +19,9 @@ export default function Login() {
     try {
       const res = await axios.post('http://localhost:3000/login', form, { withCredentials: true });
       console.log('Logged in:', res.data.user);
+
+        localStorage.setItem('cartId', '<hardcoded-or-fetched-cart-id>'); // replace the hardcoded value with one returned from the backend (e.g., fetch the user's cart or create one during login).
+
       navigate('/profile'); // or home
     } catch (err) {
       console.error(err);

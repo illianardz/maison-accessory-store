@@ -24,6 +24,9 @@ export default function Register() {
     try {
         const res = await axios.post('http://localhost:3000/register', form, { withCredentials: true });
         console.log('Logged in as:', res.data.user);
+
+        localStorage.setItem('cartId', '<hardcoded-or-new-cart-id>'); // TEMPORARY — set cart ID
+
         navigate('/profile'); // or home
     } catch (err) {
         setError(err.response?.data?.message || 'Registration failed');
