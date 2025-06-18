@@ -30,9 +30,9 @@ router.post('/register', async (req, res, next) => {
     const user = result.rows[0];
 
     // Auto-login using Passport
-    req.login(user, (err) => {
+    req.login(user, err => {
       if (err) return next(err);
-      res.status(201).json({ message: 'Registration successful', user });
+      res.json({ message: 'Login successful', user });
     });
 
   } catch (error) {
@@ -54,12 +54,38 @@ router.post('/login', (req, res, next) => {
   })(req, res, next);
 });
 
-// POST /logout
-
-router.post('/logout', (req, res) => {
-  req.logout(() => {
+// POST /logout — end user session
+router.post('/logout', (req, res, next) => {
+  req.logout(err => {
+    if (err) return next(err);
     res.json({ message: 'Logged out successfully' });
   });
+});
+
+// Redirect to Google login
+router.get('/auth/google',
+  passport.authenticate('google', { scope: ['profile', 'email'] })
+);
+
+// Handle callback from Google
+router.get('/auth/google/callback',
+  passport.authenticate('google', {
+    failureRedirect: '/login',
+    session: true
+  }),
+  (req, res) => {
+    // Redirect or respond after login
+    res.redirect('http://localhost:3001/profile'); // Adjust frontend URL
+  }
+);
+
+// GET /me — Check current session login status
+app.get('/me', (req, res) => {
+  if (req.isAuthenticated()) {
+    return res.json(req.user);
+  } else {
+    return res.status(401).json({ message: 'Not logged in' });
+  }
 });
 
 module.exports = router;

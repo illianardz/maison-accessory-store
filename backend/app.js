@@ -21,9 +21,14 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 app.use(session({
-  secret: process.env.SESSION_SECRET || 'keyboard cat',
+  secret: process.env.SESSION_SECRET || 'super_secret_key',
   resave: false,
-  saveUninitialized: false
+  saveUninitialized: false,
+  cookie: {
+    secure: false, // set to true in production with HTTPS
+    httpOnly: true,
+    maxAge: 1000 * 60 * 60 * 24 // 1 day
+  }
 }));
 
 app.use(passport.initialize());
@@ -62,3 +67,21 @@ app.use('/cart', cartRouter);
 
 const ordersRouter = require('./routes/orders');
 app.use('/orders', ordersRouter);
+
+app.use(session({
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: false,
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+// Enable CORS in Backend
+
+const cors = require('cors');
+
+app.use(cors({
+  origin: 'http://localhost:3001', // your frontend URL
+  credentials: true
+}));
