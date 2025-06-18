@@ -1,3 +1,5 @@
+CREATE EXTENSION IF NOT EXISTS "pgcrypto";
+
 CREATE TABLE Users (
     id UUID PRIMARY KEY,
     name VARCHAR(100),
